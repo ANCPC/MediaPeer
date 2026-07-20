@@ -1,6 +1,305 @@
 <!DOCTYPE html>
-<html>
-<head></head>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>MediaPeer</title>
+
+<style>
+:root{
+    --bg:#c0c0c0;
+    --window:#ece9d8;
+    --header:#000080;
+    --headerText:#ffffff;
+    --text:#000000;
+    --placeholder:#555555;
+    --border:#808080;
+    --button:#d4d0c8;
+    --buttonText:#000000;
+    --link:#0000ff;
+    --container-shadow:rgba(0,0,0,.12);
+}
+html, body{
+    height:100%;
+    width:100%;
+}
+html{
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+body{
+    margin:0;
+    overflow:hidden;
+    position:relative;
+    min-height:100vh;
+    transition: background .8s ease, color .8s ease;
+    background:
+        radial-gradient(circle at 20% 12%, rgba(255,255,255,.85), transparent 12%),
+        radial-gradient(circle at 75% 10%, rgba(255,255,255,.8), transparent 12%),
+        linear-gradient(to bottom, #6dc1ff 0%, #86d0ff 45%, #c6eeff 62%, #76c05d 68%, #3f8f3f 100%);
+}
+body::after{
+    content:"";
+    position:absolute;
+    left:-20%;
+    bottom:-30%;
+    width:140%;
+    height:65%;
+    background:
+        radial-gradient(circle at 50% 120%, #2f7d2f 0%, #3faa49 35%, #4bc25d 52%, transparent 55%);
+    filter:contrast(1.15);
+    transition: background .8s ease, opacity .8s ease;
+    z-index:0;
+    pointer-events:none;
+}
+body::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:.28;
+    background-image:
+        linear-gradient(0deg, rgba(255,255,255,.16) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.16) 75%),
+        linear-gradient(90deg, rgba(255,255,255,.16) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.16) 75%);
+    background-size:10px 10px;
+    transition: background .8s ease, opacity .8s ease;
+    z-index:3;
+}
+@keyframes lightCloud{
+    0%{transform:translate(-2px,0);} 
+    25%{transform:translate(12px,-1vh);} 
+    50%{transform:translate(2px,-1vh);} 
+    75%{transform:translate(-2px,0);} 
+    100%{transform:translate(-2px,0);}
+}
+@keyframes darkCloud{
+    0%{transform:translate(-2px,0);} 
+    25%{transform:translate(12px,-1vh);} 
+    50%{transform:translate(2px,-1vh);} 
+    75%{transform:translate(-2px,0);} 
+    100%{transform:translate(-2px,0);}
+}
+@keyframes oledCloud{
+    0%{transform:translate(0,0); opacity:.92;} 
+    100%{transform:translate(20px,140vh); opacity:.92;}
+}
+@keyframes oled-pulse{
+    0%{opacity:.18;}
+    50%{opacity:.08;}
+    100%{opacity:.18;}
+}
+.cloud{
+    position:absolute;
+    transform:translate(0,0);
+    transform-origin:center center;
+    will-change:transform, opacity;
+    background: radial-gradient(circle at 25% 60%, rgba(255,255,255,1) 0%, rgba(255,255,255,.95) 16%, rgba(255,255,255,.84) 22%, transparent 26%),
+                radial-gradient(circle at 50% 35%, rgba(255,255,255,1) 0%, rgba(255,255,255,.95) 14%, rgba(255,255,255,.86) 18%, transparent 22%),
+                radial-gradient(circle at 72% 55%, rgba(255,255,255,1) 0%, rgba(255,255,255,.95) 16%, rgba(255,255,255,.84) 20%, transparent 24%);
+    border-radius:50%;
+    box-shadow:
+        30px 10px 0 -9px rgba(255,255,255,.9),
+        -24px 16px 0 -10px rgba(255,255,255,.8),
+        18px -6px 0 -10px rgba(255,255,255,.88);
+    animation:none;
+    z-index:1;
+    filter:contrast(1.05);
+    transition: filter .7s ease, opacity .7s ease;
+    animation-fill-mode:forwards;
+}
+.cloud1{ width:170px; height:60px; top:12%; left:4%; }
+.cloud2{ width:210px; height:70px; top:18%; left:50%; }
+.cloud3{ width:140px; height:50px; top:8%; left:72%; }
+body.light .cloud{ animation: lightCloud 18s ease-in-out infinite; }
+body.dark .cloud{ animation: darkCloud 16s linear infinite; }
+body.oled .cloud{ animation: oledCloud 16s linear infinite; }
+body.light{ background:
+        radial-gradient(circle at 20% 12%, rgba(255,255,255,.85), transparent 12%),
+        radial-gradient(circle at 75% 10%, rgba(255,255,255,.8), transparent 12%),
+        linear-gradient(to bottom, #6dc1ff 0%, #86d0ff 45%, #c6eeff 62%, #76c05d 68%, #3f8f3f 100%);
+}
+body.light::after{ background:
+        radial-gradient(circle at 50% 120%, #2f7d2f 0%, #3faa49 35%, #4bc25d 52%, transparent 55%);
+}
+body.light::before{ opacity:.28; background-image:
+        linear-gradient(0deg, rgba(255,255,255,.16) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.16) 75%),
+        linear-gradient(90deg, rgba(255,255,255,.16) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.16) 75%);
+    background-size:10px 10px;
+}
+body.dark{ background: linear-gradient(to bottom, #031127 0%, #04254e 35%, #061f44 70%, #02060e 100%); color:#f1f8ff; }
+body.dark::after{ background:
+        radial-gradient(circle at 50% 120%, #1b3f23 0%, #205334 40%, #2a6e3f 55%, transparent 60%);
+}
+body.dark::before{ opacity:.22; background-image:
+        radial-gradient(circle at 30% 20%, rgba(85,180,255,.08), transparent 10%),
+        radial-gradient(circle at 80% 25%, rgba(140,210,255,.06), transparent 12%);
+}
+body.dark h1,
+body.dark p,
+body.dark input,
+body.dark button,
+body.dark .footer,
+body.dark .themeButtons button,
+body.dark header{
+    color:#f1f8ff;
+}
+body.dark input::placeholder{
+    color:#a8b9d5;
+}
+body.dark button{
+    color:#edf2ff;
+}
+body.oled{ background: #000000; color:#55ff88; }
+body.oled::after{ background:
+        radial-gradient(circle at 50% 120%, rgba(0,0,0,0) 0%, rgba(10,30,10,.35) 40%, transparent 45%);
+    opacity:.95;
+}
+body.oled h1,
+body.oled p,
+body.oled input,
+body.oled button,
+body.oled .themeButtons button,
+body.oled header{
+    color:#55ff88;
+}
+body.oled .footer{
+    color:#ff57d4;
+}
+body.oled input::placeholder{
+    color:#228844;
+}
+body.oled::before{ opacity:.14; background-image:
+        repeating-linear-gradient(180deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 3px);
+    animation: oled-pulse 2.5s ease-in-out infinite;
+}
+body.oled .cloud{ filter:contrast(1.2) brightness(1.05); opacity:.92; }
+body, header, .container, input, button, .footer, .themeButtons button{ transition: background .7s ease, color .7s ease, border-color .7s ease, box-shadow .7s ease; }
+header{ position:relative; z-index:3; height:30px; line-height:30px; background:var(--header); color:var(--headerText); border-bottom:1px solid var(--border); padding-left:10px; font-weight:bold; }
+.container{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+    width:min(420px, calc(100% - 40px));
+    max-width:420px;
+    min-height:330px;
+    background:rgba(232,245,255,0.96);
+    border:2px solid var(--border);
+    box-sizing:border-box;
+    padding:22px;
+    z-index:3;
+    box-shadow:0 14px 44px rgba(0,0,0,.16);
+}
+h1{ margin-top:0; font-size:26px; }
+input{ width:100%; height:24px; margin-top:8px; margin-bottom:12px; padding-left:6px; background:var(--bg); color:var(--text); border:1px solid var(--border); box-sizing:border-box; }
+input::placeholder{ color:var(--placeholder); }
+button{ min-width:90px; height:28px; background:var(--button); color:var(--buttonText); border:1px solid var(--border); cursor:pointer; margin-right:4px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08); }
+button:hover{ filter:brightness(0.95); }
+.footer{ margin-top:25px; font-size:13px; text-align:center; opacity:.7; }
+.themeButtons{ margin-top:15px; }
+.themeButtons button{ margin-right:5px; }
+</style>
+
+</head>
+
 <body>
+
+<header>
+
+<b>: MediaPeer</b>
+
+</header>
+
+<div class="cloud cloud1"></div>
+<div class="cloud cloud2"></div>
+<div class="cloud cloud3"></div>
+
+<div class="container">
+
+<h1>Welcome</h1>
+
+<p>Sign in to continue.</p>
+
+<input type="text" placeholder="Username">
+
+<input type="password" placeholder="Password">
+
+<button>Login</button>
+
+<button>Create Account</button>
+
+<div class="themeButtons">
+
+<button onclick="theme(0)">Light</button>
+
+<button onclick="theme(1)">Dark</button>
+
+<button onclick="theme(2)">OLED</button>
+
+</div>
+
+<div class="footer">
+
+MediaPeer • Lightweight • Open Source
+
+</div>
+
+</div>
+
+<script>
+function theme(mode){
+    const root = document.documentElement;
+    const body = document.body;
+    body.classList.remove('light', 'dark', 'oled');
+
+    if(mode===0){
+        body.classList.add('light');
+        root.style.setProperty('--bg','#C0C0C0');
+        root.style.setProperty('--window','#ECE9D8');
+        root.style.setProperty('--header','#000080');
+        root.style.setProperty('--headerText','#FFFFFF');
+        root.style.setProperty('--text','#000000');
+        root.style.setProperty('--placeholder','#555555');
+        root.style.setProperty('--border','#808080');
+        root.style.setProperty('--button','#D4D0C8');
+        root.style.setProperty('--buttonText','#000000');
+        root.style.setProperty('--link','#0000FF');
+    }
+
+    if(mode===1){
+        body.classList.add('dark');
+        root.style.setProperty('--bg','#181f29');
+        root.style.setProperty('--window','#222a35');
+        root.style.setProperty('--header','#0b1223');
+        root.style.setProperty('--headerText','#f1f8ff');
+        root.style.setProperty('--text','#edf2ff');
+        root.style.setProperty('--placeholder','#9ab3d3');
+        root.style.setProperty('--border','#335078');
+        root.style.setProperty('--button','#1a2b47');
+        root.style.setProperty('--buttonText','#ebf4ff');
+        root.style.setProperty('--link','#7ac1ff');
+    }
+
+    if(mode===2){
+        body.classList.add('oled');
+        root.style.setProperty('--bg','#000000');
+        root.style.setProperty('--window','#050505');
+        root.style.setProperty('--header','#001A0A');
+        root.style.setProperty('--headerText','#55FFAA');
+        root.style.setProperty('--text','#55FF88');
+        root.style.setProperty('--placeholder','#228844');
+        root.style.setProperty('--border','#1F5A35');
+        root.style.setProperty('--button','#101010');
+        root.style.setProperty('--buttonText','#55FF88');
+        root.style.setProperty('--link','#55FFFF');
+    }
+}
+
+// initialize light theme on load
+document.addEventListener('DOMContentLoaded', () => theme(0));
+</script>
+
 </body>
 </html>
