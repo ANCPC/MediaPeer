@@ -222,11 +222,14 @@ button:hover{ filter:brightness(0.95); }
 
 <p>Sign in to continue.</p>
 
-<input type="text" placeholder="Username">
+<input id="username" type="text">
+<input id="password" type="password">
 
-<input type="password" placeholder="Password">
+<button onclick="login()">
+Login
+</button>
 
-<button>Login</button>
+<script src="/js/login.js"></script>
 
 <button>Create Account</button>
 
